@@ -1,11 +1,22 @@
 import itertools
+import random
+
+# https://www.technomancy.org/python/powerset-generator-python/
+def powerset(seq):
+    if len(seq) <= 1:
+        yield seq
+        yield []
+    else:
+        for item in powerset(seq[1:]):
+            yield [seq[0]]+item
+            yield item
 
 def printBoard(board):
     n = len(board)
     for x in range(n):
         for y in range(n):
             for z in range(n):
-                print(board[x][y][z], end='')
+                print(board[x][z][y], end='')
             print(" ", end='')
         print("\n", end='')
 
@@ -28,8 +39,14 @@ def build(old):
     return new
 
 def copyBoard(board):
-    newboard = createBoard(len(board))
-    return [[[board[x][y][z] for x in range(len(board))] for y in range(len(board))] for z in range(len(board))]
+    n = len(board)
+    newboard = createBoard(n)
+    for x in range(n):
+        for y in range(n):
+            for z in range(n):
+                newboard[x][y][z] = board[x][y][z]
+    return newboard
+    # return [[[board[x][y][z] for x in range(len(board))] for y in range(len(board))] for z in range(len(board))]
     
 
 def isAttacked(board, x, y, z):
@@ -50,11 +67,43 @@ def twoAttacking(tup1, tup2):
         return True
     return False
 
+def generateMaximal(n):
+    # print("eh")
+    board = createBoard(n)
+    unattacked = []
+    for x in range(n):
+        for y in range(n):
+            for z in range(n):
+                unattacked.append((x, y, z))
+    while not isMaximal(board):
+        new = random.choice(unattacked)
+        # print("adding", new)
+        board[new[0]][new[1]][new[2]] = 1
+        for item in unattacked:
+            if isAttacked(board, item[0], item[1], item[2]):
+                # print("removing ", item)
+                unattacked.remove(item)
+    if isNonattackingPosition(board):
+        return board
+    else:
+        return generateMaximal(n)
+
+def areAttackingTups(tuplist, board):
+    for tup1 in tuplist:
+        if isAttacked(board, tup1[0], tup1[1], tup1[2]):
+            return True
+        for tup2 in tuplist:
+            if twoAttacking(tup1, tup2) and tup1 != tup2:
+                return True
+    return False
+
+
 def generateAttackList(poslist):
-    powset = []
-    for i in range(1,len(poslist)+1):
-        for element in itertools.combinations(poslist,i):
-            powset.append(list(element))
+    # powset = []
+    # for i in range(1,len(poslist)+1):
+        # for element in itertools.combinations(poslist,i):
+            # powset.append(list(element))
+    powset = list(powerset(poslist))
 
     removelist = []
     for setup in powset:
@@ -146,73 +195,11 @@ def isNonattackingPosition(board):
     return True
 
 if __name__ == '__main__':
-
-    n = 2
-    counts = countAllRooks(n)
-
-    fo = open("rook3.txt", "w")
-    for position in counts:
-        if not isNonattackingPosition(position):
-            counts.remove(position)
-            print("WARN: attacking position found")
-            continue
-        for x in range(n):
-            for y in range(n):
-                for z in range(n):
-                    fo.write(str(position[x][y][z]))
-        fo.write("\n")
-
-    fo.close()
-
-
-    maxinfo = []
-
-    for position in counts:
-        if not isMaximal(position):
-            continue
-        found = 0
-        for item in maxinfo:
-            found = 0
-            if item[0] == getRookCount(position):
-                item[1].append(position)
-                found = 1
-                break
-        if not found:
-            maxinfo.append([])
-            maxinfo[-1].append(getRookCount(position))
-            maxinfo[-1].append([])
-            maxinfo[-1][1].append(position)
-
-    # print(maxinfo)
-
-    fo = open("maxrook3.txt", "w")
-    for count in maxinfo:
-        fo.write(str(count[0]))
-        fo.write("\n")
-        for position in count[1]:
-            for x in range(n):
-                for y in range(n):
-                    for z in range(n):
-                        fo.write(str(position[x][y][z]))
-                    fo.write(" ")
-                fo.write("\n")
-            fo.write("\n")
-
-
-    fo.close()
-
-    aha = createBoard(3)
-
-    aha[1][2][0] = 1
-
-    print(isAttacked(aha, 1, 0, 0))
-
-    # board[1][1][1] = True
-
-    # newboard = copyBoard(board)
-    # board[0][0][1] = True
-
-    # print(board == newboard)
-    # print(isAttacked(board, 1, 2, 2))
-
-
+    n = 3
+    for i in range(1, n + 1):
+        thinglist = countAllRooks(i)
+        count = 0
+        for thing in thinglist:
+            if isMaximal(thing):
+                count += 1
+        print(count)
