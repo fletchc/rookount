@@ -2,6 +2,7 @@ import itertools
 import random
 
 # https://www.technomancy.org/python/powerset-generator-python/
+# returns the powerset of the list seq
 def powerset(seq):
     if len(seq) <= 1:
         yield seq
@@ -11,6 +12,7 @@ def powerset(seq):
             yield [seq[0]]+item
             yield item
 
+# prints out a given board in a formatted manner
 def printBoard(board):
     n = len(board)
     for x in range(n):
@@ -20,15 +22,11 @@ def printBoard(board):
             print(" ", end='')
         print("\n", end='')
 
+# returns an 3d list of size n filled with 0's
 def createBoard(n):
     return [[[0 for x in range(n)] for y in range(n)] for z in range(n)]
 
-def createLatinSquare(board):
-    if not isMaximal(board):
-        return -1
-
-
-
+# returns a board one larger than old with the
 def build(old):
     n = len(old)
     new = createBoard(n + 1)
@@ -38,6 +36,8 @@ def build(old):
                 new[x][y][z] = old[x][y][z]
     return new
 
+# returns a list that is identical to the input board.
+# I don't actually know how python allocates and manages memory with respect to lists so I wrote this function and it does what I want.
 def copyBoard(board):
     n = len(board)
     newboard = createBoard(n)
@@ -48,13 +48,14 @@ def copyBoard(board):
     return newboard
     # return [[[board[x][y][z] for x in range(len(board))] for y in range(len(board))] for z in range(len(board))]
     
-
+# tells whether a positions at indices x, y, z is attacked. Note that if there is a rook at x, y, z then the position will be treated as attacked. Whether this is the right decision to have made is debatable.
 def isAttacked(board, x, y, z):
     for i in range(len(board)):
         if board[i][y][z] or board[x][i][z] or board[x][y][i]:
             return True
     return False
 
+# tup1 and tup2 store indices of two rooks. This logical structure is pretty horrid.
 def twoAttacking(tup1, tup2):
     if tup1[0] != tup2[0]:
         if tup1[1] == tup2[1] and tup1[2] == tup2[2]:
@@ -67,6 +68,7 @@ def twoAttacking(tup1, tup2):
         return True
     return False
 
+# returns a random board of size n completely filled with nonattacking rooks.
 def generateMaximal(n):
     # print("eh")
     board = createBoard(n)
@@ -88,6 +90,7 @@ def generateMaximal(n):
     else:
         return generateMaximal(n)
 
+# given a list of 3-tuples containing the coordinates of rooks, returns whether any are attacking each other
 def areAttackingTups(tuplist, board):
     for tup1 in tuplist:
         if isAttacked(board, tup1[0], tup1[1], tup1[2]):
@@ -121,6 +124,7 @@ def generateAttackList(poslist):
 
     return powset
 
+# probably broken
 def generateLarger(board):
     boardlist = []
     newboard = build(board)
@@ -146,6 +150,7 @@ def generateLarger(board):
 
     return boardlist
 
+# returns true if the rook placement on board has no nonattacked squares
 def isMaximal(board):
     n = len(board)
     for x in range(n):
@@ -157,8 +162,7 @@ def isMaximal(board):
                     return False
     return True
 
-# def countArrangements(n):
-
+# broken function that was supposed to recursively compute all rook positions up to size n
 def countAllRooks(n):
     if n == 1:
         first = createBoard(n)
@@ -171,6 +175,7 @@ def countAllRooks(n):
             boardlist += generateLarger(pos)
         return boardlist
 
+# returns the number of rooks in board
 def getRookCount(board):
     n = len(board)
     count = 0
@@ -180,6 +185,7 @@ def getRookCount(board):
                 if board[x][y][z]:
                     count += 1
     return count
+
 
 def isNonattackingPosition(board):
     n = len(board)

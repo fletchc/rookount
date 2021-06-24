@@ -180,7 +180,44 @@ def getCountsByInitialSlice(n):
             counts[m].append(count)
     return counts
 
+def getAllOfSize(n, num):
+    # minimum = 999
+    out = []
+    for i in range(n):
+        for j in range(i+1):
+            for k in range(j+1):
+                working = generatethething([k, j, i], n)
+                if len(working) == num:
+                    out.append([k, j, i])
+    return out
+
+def getTetMin(n):
+    minimum = 999
+    smol = []
+    for i in range(n):
+        for j in range(i+1):
+            for k in range(j+1):
+                working = generatethething([k, j, i], n)
+                if len(working) < minimum:
+                    smol = [k, j, i]
+                    minimum = len(working)
+    return smol
+
+
 if __name__ == '__main__':
+    print(getAllOfSize(7,10))
     # printTetSlices(generatethething([5,9,18], 32), 32)
-    n = 7
-    print(getCountsByInitialSlice(n))
+    # n = 18
+    # minimum = 999
+    # smol = []
+    # for i in range(n):
+        # for j in range(i+1):
+            # for k in range(j+1):
+                # working = generatethething([k, j, i], n)
+                # if len(working) == 57:
+                    # print(k, j, i)
+                # if len(working) < minimum:
+                    # smol = [k, j, i]
+                    # minimum = len(working)
+    # print(smol)
+    # print(minimum)

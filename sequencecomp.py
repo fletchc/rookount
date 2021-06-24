@@ -60,10 +60,10 @@ for i in range(1, 10):
     print(nchoosek(i + 1, 3))
     # print(getTetNum(i - 1))
 
+# prints the values for the number of ways to place two nonattacking rooks
 for i in range(1, 10):
     # print(triangular(cattrap(i, 3)) - nchoosek(nchoosek(i+2,2), 2)) 
     print(nchoosek(nchoosek(i + 1, 3), 2) - nchoosek(nchoosek(i, 2), 2))
-    print(nchoosek(nchoosek(i + 1, 3), 2) - triangular(triangular(i - 1) - 1))
 
 
 for i in range(1, 10):
