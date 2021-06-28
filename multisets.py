@@ -49,7 +49,6 @@ def simpToCubicConnor(simp):
     cubic.append(simp[2])
     return cubic
 
-# poo poo garbage
 # def generatePositions(n, poslist):
     # positions = []
     # for i in range(len(poslist) - n + 1):

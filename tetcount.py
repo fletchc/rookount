@@ -41,28 +41,6 @@ def generateTetPositions(board, limit):
             boardlist.append(workingboard)
     return boardlist
 
-def cringe(board):
-    base = buildTet(board)
-    n = len(base)
-    freesquares = []
-
-    div = 0
-    for x in range(div, n):
-        div += 1
-        for y in range(div, n):
-            freesquares.append((x, y, n - 1))
-
-    boardlist = []
-    for position in powset:
-        if areAttackingTups(position, base):
-            continue
-        workingboard = copyBoard(base)
-        for tup in position:
-            workingboard[tup[0]][tup[1]][tup[2]] = 1
-        if getRookCount(workingboard) <= limit:
-            boardlist.append(workingboard)
-    return boardlist
-
 def generateAllUpToN(n, limit):
     if n == 1:
         return [createBoard(1)]
